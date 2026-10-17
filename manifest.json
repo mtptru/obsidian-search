@@ -3,7 +3,8 @@
 	"name": "Ranked Search",
 	"version": "1.0.0",
 	"minAppVersion": "1.13.0",
-	"description": "Search your vault and get the closest match first: exact titles, then headings, then phrases, then scattered words.",
+	"description": "Search your vault with the closest match first, ranking exact titles and headings above notes that only mention your words.",
 	"author": "Max Prince",
+	"authorUrl": "https://github.com/mtptru",
 	"isDesktopOnly": false
 }

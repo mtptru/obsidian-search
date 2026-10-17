@@ -56,3 +56,19 @@ test('highlight ranges cover whole words and camelCase parts', () => {
 	assert.deepEqual(highlightRanges('PrinceStringLists', q), [[6, 17]]);
 	assert.deepEqual(highlightRanges('substring', q), []);
 });
+
+test('README examples', () => {
+	const docs = [
+		doc('Books/Reading List.md', 'novels'),
+		doc('Reading List Archive.md'),
+		doc('Plans.md', '## Fall reading list\nbooks'),
+		doc('Notes.md', 'keep reading, then list what you liked'),
+		doc('Code.md', 'const myReadingList = []'),
+	];
+	for (const query of ['reading list', 'reading lists', 'reding list', 'reading li']) {
+		assert.equal(titles(docs, query)[0], 'Reading List', query);
+	}
+	const order = titles(docs, 'reading list');
+	assert.deepEqual(order.slice(0, 3), ['Reading List', 'Reading List Archive', 'Plans']);
+	assert.ok(order.includes('Code'), 'camelCase match');
+});

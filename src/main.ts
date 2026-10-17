@@ -1,4 +1,4 @@
-import { App, debounce, Plugin, PluginSettingTab, SettingDefinitionItem, TAbstractFile } from 'obsidian';
+import { App, debounce, normalizePath, Plugin, PluginSettingTab, SettingDefinitionItem, TAbstractFile } from 'obsidian';
 import { RankedSearchModal } from './search-modal';
 import { VaultIndex } from './vault-index';
 
@@ -47,8 +47,9 @@ export default class RankedSearchPlugin extends Plugin {
 	isExcluded(path: string): boolean {
 		return this.settings.excludedFolders
 			.split('\n')
-			.map((line) => line.trim().replace(/^\/+|\/+$/g, ''))
-			.some((folder) => folder && (path === folder || path.startsWith(folder + '/')));
+			.filter((line) => line.trim())
+			.map((line) => normalizePath(line.trim()))
+			.some((folder) => path === folder || path.startsWith(folder + '/'));
 	}
 
 	rebuildSoon = debounce(() => void this.index.build(), 500, true);
