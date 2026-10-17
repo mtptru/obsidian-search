@@ -1,6 +1,6 @@
 # Ranked Search
 
-An Obsidian plugin that searches your vault and puts the closest match first, the way Google Docs or Chrome's address bar do, instead of listing every note that contains your words.
+An Obsidian plugin that searches your vault and puts the closest match first.
 
 Searching `String Lists` gives, in order:
 
@@ -23,7 +23,7 @@ Results show the folder and a highlighted snippet. Picking a result opens the no
 
 ## Install
 
-### From Obsidian (once it's listed in the community directory)
+### From Obsidian
 
 1. Open **Settings → Community plugins**. If **Restricted mode** is on, select **Turn on community plugins**.
 2. Select **Browse**, search for **Ranked Search**, then select **Install**.
