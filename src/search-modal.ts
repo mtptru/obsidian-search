@@ -78,14 +78,34 @@ export class RankedSearchModal extends SuggestModal<Hit> {
 
 function snippetFor(hit: Hit, q: Query): string {
 	const lines = hit.doc.lines;
-	let text = hit.line >= 0 ? lines[hit.line] : lines.find((l) => l.trim() && !/^---\s*$/.test(l));
+	const text = hit.line >= 0 ? stripMarkup(lines[hit.line] ?? '') : firstContentLine(lines);
 	if (!text) return '';
-	text = text.replace(/^#{1,6}\s+/, '').trim();
 	if (text.length <= SNIPPET_LENGTH) return text;
 	// Center long lines on the first match
 	const start = highlightRanges(text, q)[0]?.[0] ?? 0;
 	const from = Math.max(0, start - SNIPPET_LENGTH / 3);
 	return (from > 0 ? '…' : '') + text.slice(from, from + SNIPPET_LENGTH) + '…';
+}
+
+// Drop heading, quote, list and checkbox markers so the preview reads as plain text
+function stripMarkup(line: string): string {
+	return line.replace(/^\s*(?:#{1,6}\s+|>\s*|(?:[-*+]|\d+\.)\s+(?:\[.\]\s*)?)/, '').trim();
+}
+
+// The first line worth previewing: skips frontmatter, dividers and empty list items
+function firstContentLine(lines: string[]): string {
+	let i = 0;
+	if (lines[0]?.trim() === '---') {
+		const end = lines.findIndex((l, j) => j > 0 && l.trim() === '---');
+		i = end === -1 ? 0 : end + 1;
+	}
+	for (; i < lines.length; i++) {
+		const line = lines[i] ?? '';
+		if (/^\s*([-_*])(\s*\1){2,}\s*$/.test(line)) continue;
+		const text = stripMarkup(line);
+		if (text) return text;
+	}
+	return '';
 }
 
 function highlight(el: HTMLElement, text: string, q: Query): void {

@@ -1,9 +1,0 @@
-{
-	"id": "ranked-search",
-	"name": "Ranked Search",
-	"version": "1.0.0",
-	"minAppVersion": "1.13.0",
-	"description": "Search your vault and get the closest match first: exact titles, then headings, then phrases, then scattered words.",
-	"author": "Max Prince",
-	"isDesktopOnly": false
-}
