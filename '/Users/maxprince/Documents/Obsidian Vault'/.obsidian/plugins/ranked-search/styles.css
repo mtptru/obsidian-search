@@ -1,0 +1,28 @@
+.ranked-search-modal .ranked-search-item {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.ranked-search-title {
+	font-weight: var(--font-semibold);
+}
+
+.ranked-search-path {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-faint);
+}
+
+.ranked-search-snippet {
+	font-size: var(--font-ui-small);
+	color: var(--text-muted);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.ranked-search-match {
+	color: var(--text-normal);
+	background-color: var(--text-highlight-bg);
+	border-radius: 2px;
+}
