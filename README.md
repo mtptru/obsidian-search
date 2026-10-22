@@ -5,10 +5,11 @@ An Obsidian plugin that searches your vault and puts the closest match first.
 Searching `reading list` puts results in this order:
 
 1. A note titled exactly **Reading List**
-2. Titles that start with or contain the phrase, shorter titles first
-3. Headings that match the phrase, like `## Fall reading list`
-4. Lines that contain the phrase
-5. Notes that contain all the words, but not next to each other
+2. Titles that start with the phrase, like **Reading List Archive**, shorter titles first
+3. Titles that contain the phrase further in, like **Fall Reading List**
+4. Headings that match the phrase, like `## Fall reading list`
+5. Lines that contain the phrase
+6. Notes that contain all the words, but not next to each other
 
 It also handles:
 

@@ -142,9 +142,11 @@ function phraseRegExp(q: Query): RegExp {
 }
 
 // How well one piece of text (a title, heading or line) matches the query
-const EXACT = 5;
-const STARTS = 4;
-const PHRASE = 3;
+const EXACT = 6;
+const STARTS = 5;
+const PHRASE = 4;
+// Loose phrase at the very start, like "resea" in "Research Interests"
+const LOOSE_STARTS = 3;
 const LOOSE_PHRASE = 2;
 const ALL_WORDS = 1;
 
@@ -153,14 +155,18 @@ function matchLevel(text: string, q: Query, loose: RegExp): number {
 	if (text === q.phrase) return EXACT;
 	if (text.startsWith(q.phrase) && text.charAt(q.phrase.length) === ' ') return STARTS;
 	if ((' ' + text + ' ').includes(' ' + q.phrase + ' ')) return PHRASE;
-	if (loose.test(text)) return LOOSE_PHRASE;
+	const m = loose.exec(text);
+	if (m) return m.index === 0 ? LOOSE_STARTS : LOOSE_PHRASE;
 	if (q.terms.every((t) => hasWord(text, t))) return ALL_WORDS;
 	return 0;
 }
 
-const TITLE_POINTS = [0, 400, 650, 600, 550, 1000];
-const HEADING_POINTS = [0, 200, 330, 380, 400, 500];
-const LINE_POINTS = [0, 100, 160, 180, 180, 180];
+// Title levels are 150 apart, more than the length penalty (up to 60) plus all that headings,
+// body and recency can add (up to 80). So from loose phrase up, a closer title match always wins.
+const TITLE_POINTS = [0, 400, 550, 700, 850, 1000, 1150];
+const TITLE_LENGTH_PENALTY = 60;
+const HEADING_POINTS = [0, 200, 330, 355, 380, 400, 500];
+const LINE_POINTS = [0, 100, 160, 160, 180, 180, 180];
 
 export function scoreDoc(doc: Doc, q: Query, loose: RegExp, now: number): Hit | null {
 	const fuzzy = q.terms.some((t) => t.fuzzy);
@@ -176,7 +182,7 @@ export function scoreDoc(doc: Doc, q: Query, loose: RegExp, now: number): Hit | 
 			pts = nTerms ? (150 * found) / nTerms : 0;
 		}
 		// Shorter titles are closer matches: "String Lists" beats "String Lists Archive"
-		if (level > 0 && level < EXACT) pts -= Math.min(100, text.length - q.phrase.length);
+		if (level > 0 && level < EXACT) pts -= Math.min(TITLE_LENGTH_PENALTY, text.length - q.phrase.length);
 		if (i > 0) pts *= 0.9;
 		title = Math.max(title, pts);
 	}

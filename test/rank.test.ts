@@ -26,6 +26,23 @@ test('exact title beats alphabetical partial matches', () => {
 	assert.equal(got[1], 'String Lists Archive');
 });
 
+test('title starting with the query beats titles that contain it', () => {
+	const old = NOW - 365 * 86_400_000;
+	const docs = [
+		doc('AI Research/Gaps & Research Ideas.md', '# Research\na main page for AI research\nresearch\nresearch'),
+		doc('College/Outsourced Research.md', 'reach out to profs who need research help'),
+		doc('College/UW Master/UW Profs and Research to Reach Out to.md', '# Profs'),
+		doc('AI Research/Research Interests.md', 'Overarching', old),
+		doc('Modern Art.md'),
+		doc('Artificial Intelligence.md'),
+	];
+	for (const query of ['research', 'resea']) {
+		assert.equal(titles(docs, query)[0], 'Research Interests', query);
+	}
+	// A whole word anywhere in the title still beats a partial word at the start
+	assert.deepEqual(titles(docs, 'art'), ['Modern Art', 'Artificial Intelligence']);
+});
+
 test('heading match beats scattered body words', () => {
 	const docs = [
 		doc('Goals.md', '# Goals\n## Prince String Lists\nstuff'),
